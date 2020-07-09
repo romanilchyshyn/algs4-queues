@@ -89,7 +89,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         private int current = 0;
 
         RandomizedQueueIterator() {
-            shuffled = (Item[]) new Object[a.length];
+            shuffled = (Item[]) new Object[N];
             for (int i = 0; i < N; i++)
                 shuffled[i] = a[i];
 
