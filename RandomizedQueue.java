@@ -12,7 +12,7 @@ import java.util.NoSuchElementException;
 public class RandomizedQueue<Item> implements Iterable<Item> {
 
     private Item[] a;
-    private int N = 0;
+    private int size = 0;
 
     // construct an empty randomized queue
     public RandomizedQueue() {
@@ -21,12 +21,12 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     // is the randomized queue empty?
     public boolean isEmpty() {
-        return N == 0;
+        return size == 0;
     }
 
     // return the number of items on the randomized queue
     public int size() {
-        return N;
+        return size;
     }
 
     // add the item
@@ -35,11 +35,11 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
             throw new IllegalArgumentException();
         }
 
-        if (N == a.length) {
+        if (size == a.length) {
             resize(2 * a.length);
         }
 
-        a[N++] = item;
+        a[size++] = item;
     }
 
     // remove and return a random item
@@ -48,13 +48,16 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
             throw new NoSuchElementException();
         }
 
-        int randomIndex = StdRandom.uniform(N);
+        int randomIndex = StdRandom.uniform(size);
         Item item = a[randomIndex];
 
-        Item lastItem = a[N-1];
+        Item lastItem = a[size-1];
         a[randomIndex] = lastItem;
+        a[size-1] = null;
 
-        if (N > 0 && N == a.length/4) {
+        size--;
+
+        if (size > 0 && size == a.length/4) {
             resize(a.length / 2);
         }
 
@@ -67,12 +70,12 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
             throw new NoSuchElementException();
         }
 
-        return a[StdRandom.uniform(N)];
+        return a[StdRandom.uniform(size)];
     }
 
     private void resize(int capacity) {
         Item[] copy = (Item[]) new Object[capacity];
-        for (int i = 0; i < N; i++) {
+        for (int i = 0; i < size; i++) {
             copy[i] = a[i];
         }
         a = copy;
@@ -85,12 +88,12 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     private class RandomizedQueueIterator implements Iterator<Item> {
 
-        private Item[] shuffled;
+        private final Item[] shuffled;
         private int current = 0;
 
         RandomizedQueueIterator() {
-            shuffled = (Item[]) new Object[N];
-            for (int i = 0; i < N; i++)
+            shuffled = (Item[]) new Object[size];
+            for (int i = 0; i < size; i++)
                 shuffled[i] = a[i];
 
             StdRandom.shuffle(shuffled);
